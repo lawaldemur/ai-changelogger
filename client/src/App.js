@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import {
     BrowserRouter as Router,
@@ -48,7 +48,6 @@ function App() {
     const [showCopyNotification, setShowCopyNotification] = useState(false);
     const [showPublishNotification, setShowPublishNotification] =
         useState(false);
-    const [isAdmin, setIsAdmin] = useState(true);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
