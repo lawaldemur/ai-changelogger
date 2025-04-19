@@ -1,17 +1,18 @@
 import React, { useState } from "react";
 import "./App.css";
+import DiffViewer from "./components/DiffViewer";
 
 function App() {
     const [formData, setFormData] = useState({
         owner: "",
         repo: "",
-        path: "",
         baseRef: "",
         headRef: "",
     });
     const [result, setResult] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [selectedFile, setSelectedFile] = useState(null);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -26,6 +27,7 @@ function App() {
         setLoading(true);
         setError(null);
         setResult(null);
+        setSelectedFile(null);
 
         try {
             const response = await fetch("/api/compare", {
@@ -42,6 +44,9 @@ function App() {
 
             const data = await response.json();
             setResult(data);
+            if (data.files.length > 0) {
+                setSelectedFile(data.files[0]);
+            }
         } catch (err) {
             setError(err.message);
         } finally {
@@ -84,19 +89,6 @@ function App() {
                             onChange={handleChange}
                             required
                             placeholder="e.g., react"
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="path">File Path:</label>
-                        <input
-                            type="text"
-                            id="path"
-                            name="path"
-                            value={formData.path}
-                            onChange={handleChange}
-                            required
-                            placeholder="e.g., src/App.js"
                         />
                     </div>
 
@@ -148,10 +140,24 @@ function App() {
                             <pre>{result.changelog}</pre>
                         </div>
 
-                        <h3>Code Diff</h3>
-                        <div className="diff">
-                            <pre>{result.diff}</pre>
+                        <h3>Changed Files</h3>
+                        <div className="file-list">
+                            {result.files.map((file) => (
+                                <button
+                                    key={file.path}
+                                    className={`file-button ${
+                                        selectedFile?.path === file.path
+                                            ? "active"
+                                            : ""
+                                    }`}
+                                    onClick={() => setSelectedFile(file)}
+                                >
+                                    {file.path}
+                                </button>
+                            ))}
                         </div>
+
+                        {selectedFile && <DiffViewer file={selectedFile} />}
                     </div>
                 )}
             </main>

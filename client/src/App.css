@@ -35,6 +35,7 @@
     max-width: 800px;
     margin: 2rem auto;
     padding: 0 1rem;
+    margin-bottom: 4rem;
 }
 
 .compare-form {
@@ -132,6 +133,69 @@ pre {
     font-family: monospace;
     font-size: 0.9rem;
     line-height: 1.4;
+}
+
+.diff-line {
+    padding: 2px 4px;
+    margin: 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.diff-line.added {
+    background-color: rgba(0, 255, 0, 0.1);
+    border-left: 3px solid #4caf50;
+}
+
+.diff-line.removed {
+    background-color: rgba(255, 0, 0, 0.1);
+    border-left: 3px solid #f44336;
+}
+
+.diff-line.unchanged {
+    color: #666;
+}
+
+.diff-line.separator {
+    color: #666;
+    text-align: center;
+    padding: 4px 0;
+    font-style: italic;
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.file-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.file-button {
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 300px;
+    color: #333;
+}
+
+.file-button:hover {
+    background: #e9ecef;
+    border-color: #adb5bd;
+    color: #333;
+}
+
+.file-button.active {
+    background: #4a90e2;
+    color: white;
+    border-color: #357abd;
 }
 
 @keyframes App-logo-spin {
