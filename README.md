@@ -5,6 +5,65 @@ An AI-powered tool for generating and managing changelogs for GitHub repositorie
 1. A developer tool for generating changelogs using AI
 2. A public-facing website for displaying changelogs
 
+## Project Impact and Importance
+
+-   **Developer Productivity**: Automates the time-consuming task of writing changelogs, allowing developers to focus on coding
+-   **Documentation Quality**: Ensures consistent, well-written changelog entries using AI-powered analysis
+-   **User Communication**: Improves communication between developers and users through clear, readable changelogs
+-   **Project Transparency**: Makes code changes more accessible and understandable to all stakeholders
+-   **Version Control**: Helps track and document software evolution over time
+
+## Technology Stack
+
+### Frontend
+
+-   **React**: Component-based UI development
+-   **React Router**: Client-side routing
+-   **React Markdown**: Markdown rendering
+-   **CSS Modules**: Scoped styling
+-   **Modern CSS**: Flexbox and Grid layouts
+
+### Backend
+
+-   **Node.js**: Runtime environment
+-   **Express**: Web framework
+-   **MongoDB**: Document database
+-   **Mongoose**: MongoDB ODM
+-   **Octokit**: GitHub API client
+-   **OpenAI API**: GPT-4 integration
+
+### Development Tools
+
+-   **Cursor IDE**: AI-powered development environment
+-   **Git**: Version control
+-   **npm**: Package management
+-   **MongoDB Compass**: Database management
+
+## Development Challenges
+
+1. **AI Integration**
+
+    - Fine-tuning prompt engineering for optimal changelog generation
+    - Handling API rate limits and costs
+    - Ensuring consistent output quality
+
+2. **Data Management**
+
+    - Designing flexible MongoDB schema for changelog entries
+    - Implementing efficient version comparison
+    - Managing large code diffs and file changes
+
+3. **User Experience**
+
+    - Creating intuitive interface for code comparison
+    - Implementing real-time preview of generated changelogs
+    - Ensuring responsive design across devices
+
+4. **Technical Implementation**
+    - Handling CORS and API security
+    - Managing state between frontend and backend
+    - Optimizing performance for large repositories
+
 ## Features
 
 -   **AI-Powered Changelog Generation**: Uses OpenAI's GPT-4.1 model to analyze code changes and generate human-readable changelog entries
