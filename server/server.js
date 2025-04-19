@@ -3,10 +3,48 @@ const cors = require("cors");
 const { Octokit } = require("octokit");
 const { OpenAI } = require("openai");
 const { diffLines } = require("diff");
+const mongoose = require("mongoose");
 require("dotenv").config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// Initialize MongoDB connection
+mongoose.connect(
+    process.env.MONGODB_URI || "mongodb://localhost:27017/changelogger",
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    }
+);
+
+// Define Changelog Entry Schema
+const changelogEntrySchema = new mongoose.Schema({
+    owner: String,
+    repo: String,
+    version: String,
+    date: { type: Date, default: Date.now },
+    content: String,
+    changes: [
+        {
+            type: {
+                type: String,
+                required: true,
+            },
+            description: {
+                type: String,
+                required: true,
+            },
+            impact: {
+                type: String,
+                required: true,
+            },
+        },
+    ],
+    isPublished: { type: Boolean, default: false },
+});
+
+const ChangelogEntry = mongoose.model("ChangelogEntry", changelogEntrySchema);
 
 // Initialize OpenAI and Octokit
 const openai = new OpenAI({
@@ -204,6 +242,67 @@ app.post("/api/compare", async (req, res) => {
         });
     } catch (error) {
         console.error("Error in comparison:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// New endpoint to save a changelog entry
+app.post("/api/changelog", async (req, res) => {
+    try {
+        const { owner, repo, version, content, changes, isPublished } =
+            req.body;
+
+        // Find and update existing entry or create a new one
+        const entry = await ChangelogEntry.findOneAndUpdate(
+            { owner, repo, version },
+            {
+                content,
+                changes,
+                isPublished,
+                date: new Date(), // Update the date to now
+            },
+            {
+                new: true, // Return the updated document
+                upsert: true, // Create if doesn't exist
+            }
+        );
+
+        res.json(entry);
+    } catch (error) {
+        console.error("Error saving changelog:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// New endpoint to get all changelog entries for a repo
+app.get("/api/changelog/:owner/:repo", async (req, res) => {
+    try {
+        const { owner, repo } = req.params;
+        const entries = await ChangelogEntry.find({
+            owner,
+            repo,
+            isPublished: true,
+        }).sort({ date: -1 });
+        res.json(entries);
+    } catch (error) {
+        console.error("Error fetching changelog entries:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// New endpoint to publish/unpublish a changelog entry
+app.put("/api/changelog/:id/publish", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { isPublished } = req.body;
+        const entry = await ChangelogEntry.findByIdAndUpdate(
+            id,
+            { isPublished },
+            { new: true }
+        );
+        res.json(entry);
+    } catch (error) {
+        console.error("Error updating changelog entry:", error);
         res.status(500).json({ error: error.message });
     }
 });

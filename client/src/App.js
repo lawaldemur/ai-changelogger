@@ -1,7 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
+import {
+    BrowserRouter as Router,
+    Routes,
+    Route,
+    Link,
+    useLocation,
+} from "react-router-dom";
 import "./App.css";
 import DiffViewer from "./components/DiffViewer";
+import PublicChangelog from "./components/PublicChangelog";
+
+const API_BASE_URL = "http://localhost:5001";
+
+function Navigation({ owner, repo }) {
+    const location = useLocation();
+    const isGeneratorPage = location.pathname === "/";
+    const isChangelogPage = location.pathname.startsWith("/changelog/");
+
+    return (
+        <nav className="main-nav">
+            {!isGeneratorPage && (
+                <Link to="/" className="nav-link">
+                    Generator
+                </Link>
+            )}
+            {!isChangelogPage && owner && repo && (
+                <Link to={`/changelog/${owner}/${repo}`} className="nav-link">
+                    View Public Changelog
+                </Link>
+            )}
+        </nav>
+    );
+}
 
 function App() {
     const [formData, setFormData] = useState({
@@ -15,6 +46,9 @@ function App() {
     const [error, setError] = useState(null);
     const [selectedFile, setSelectedFile] = useState(null);
     const [showCopyNotification, setShowCopyNotification] = useState(false);
+    const [showPublishNotification, setShowPublishNotification] =
+        useState(false);
+    const [isAdmin, setIsAdmin] = useState(true);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -66,129 +100,213 @@ function App() {
         }
     };
 
+    const handlePublishChangelog = async () => {
+        if (!result) return;
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/changelog`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    owner: formData.owner,
+                    repo: formData.repo,
+                    version: formData.headRef,
+                    content: result.changelog,
+                    changes: result.files.map((file) => ({
+                        type: "code",
+                        description: file.path,
+                        impact: "Modified",
+                    })),
+                    isPublished: true,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || "Failed to publish changelog");
+            }
+
+            setShowPublishNotification(true);
+            setTimeout(() => setShowPublishNotification(false), 2000);
+        } catch (err) {
+            setError(err.message);
+        }
+    };
+
     return (
-        <div className="App">
-            <header className="App-header">
-                <h1>AI Changelogger</h1>
-                <p>
-                    Compare GitHub code versions and generate human-readable
-                    changelogs
-                </p>
-            </header>
+        <Router>
+            <div className="App">
+                <header className="App-header">
+                    <h1>AI Changelogger</h1>
+                    <p>
+                        Compare GitHub code versions and generate human-readable
+                        changelogs
+                    </p>
+                    <Navigation owner={formData.owner} repo={formData.repo} />
+                </header>
 
-            <main className="App-main">
-                <form onSubmit={handleSubmit} className="compare-form">
-                    <div className="form-group">
-                        <label htmlFor="owner">Repository Owner:</label>
-                        <input
-                            type="text"
-                            id="owner"
-                            name="owner"
-                            value={formData.owner}
-                            onChange={handleChange}
-                            required
-                            placeholder="e.g., facebook"
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="repo">Repository Name:</label>
-                        <input
-                            type="text"
-                            id="repo"
-                            name="repo"
-                            value={formData.repo}
-                            onChange={handleChange}
-                            required
-                            placeholder="e.g., react"
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="baseRef">
-                            Base Version (Branch/Tag):
-                        </label>
-                        <input
-                            type="text"
-                            id="baseRef"
-                            name="baseRef"
-                            value={formData.baseRef}
-                            onChange={handleChange}
-                            required
-                            placeholder="e.g., main"
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="headRef">
-                            New Version (Branch/Tag):
-                        </label>
-                        <input
-                            type="text"
-                            id="headRef"
-                            name="headRef"
-                            value={formData.headRef}
-                            onChange={handleChange}
-                            required
-                            placeholder="e.g., feature/new-feature"
-                        />
-                    </div>
-
-                    <button type="submit" disabled={loading}>
-                        {loading ? "Generating..." : "Generate Changelog"}
-                    </button>
-                </form>
-
-                {error && (
-                    <div className="error-message">
-                        <p>Error: {error}</p>
-                    </div>
-                )}
-
-                {result && (
-                    <div className="result-container">
-                        <div className="changelog-header">
-                            <h2>Changelog</h2>
-                            <button
-                                onClick={handleCopyChangelog}
-                                className="copy-button"
-                                title="Copy changelog to clipboard"
-                            >
-                                📄 Copy
-                            </button>
-                        </div>
-                        <div className="changelog">
-                            <ReactMarkdown>{result.changelog}</ReactMarkdown>
-                        </div>
-
-                        {showCopyNotification && (
-                            <div className="copy-notification">
-                                Markdown copied to clipboard
-                            </div>
-                        )}
-
-                        <h3>Changed Files</h3>
-                        <div className="file-list">
-                            {result.files.map((file) => (
-                                <button
-                                    key={file.path}
-                                    className={`file-button ${
-                                        selectedFile?.path === file.path
-                                            ? "active"
-                                            : ""
-                                    }`}
-                                    onClick={() => setSelectedFile(file)}
+                <Routes>
+                    <Route
+                        path="/"
+                        element={
+                            <main className="App-main">
+                                <form
+                                    onSubmit={handleSubmit}
+                                    className="compare-form"
                                 >
-                                    {file.path}
-                                </button>
-                            ))}
-                        </div>
+                                    <div className="form-group">
+                                        <label htmlFor="owner">
+                                            Repository Owner:
+                                        </label>
+                                        <input
+                                            type="text"
+                                            id="owner"
+                                            name="owner"
+                                            value={formData.owner}
+                                            onChange={handleChange}
+                                            required
+                                            placeholder="e.g., facebook"
+                                        />
+                                    </div>
 
-                        {selectedFile && <DiffViewer file={selectedFile} />}
-                    </div>
-                )}
-            </main>
-        </div>
+                                    <div className="form-group">
+                                        <label htmlFor="repo">
+                                            Repository Name:
+                                        </label>
+                                        <input
+                                            type="text"
+                                            id="repo"
+                                            name="repo"
+                                            value={formData.repo}
+                                            onChange={handleChange}
+                                            required
+                                            placeholder="e.g., react"
+                                        />
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label htmlFor="baseRef">
+                                            Base Version (Branch/Tag):
+                                        </label>
+                                        <input
+                                            type="text"
+                                            id="baseRef"
+                                            name="baseRef"
+                                            value={formData.baseRef}
+                                            onChange={handleChange}
+                                            required
+                                            placeholder="e.g., main"
+                                        />
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label htmlFor="headRef">
+                                            New Version (Branch/Tag):
+                                        </label>
+                                        <input
+                                            type="text"
+                                            id="headRef"
+                                            name="headRef"
+                                            value={formData.headRef}
+                                            onChange={handleChange}
+                                            required
+                                            placeholder="e.g., feature/new-feature"
+                                        />
+                                    </div>
+
+                                    <button type="submit" disabled={loading}>
+                                        {loading
+                                            ? "Generating..."
+                                            : "Generate Changelog"}
+                                    </button>
+                                </form>
+
+                                {error && (
+                                    <div className="error-message">
+                                        <p>Error: {error}</p>
+                                    </div>
+                                )}
+
+                                {result && (
+                                    <div className="result-container">
+                                        <div className="changelog-header">
+                                            <h2>Generated Changelog</h2>
+                                            <div className="changelog-actions">
+                                                <button
+                                                    onClick={
+                                                        handleCopyChangelog
+                                                    }
+                                                    className="copy-button"
+                                                    title="Copy changelog to clipboard"
+                                                >
+                                                    📄 Copy
+                                                </button>
+                                                <button
+                                                    onClick={
+                                                        handlePublishChangelog
+                                                    }
+                                                    className="publish-button"
+                                                >
+                                                    Publish
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div className="changelog">
+                                            <ReactMarkdown>
+                                                {result.changelog}
+                                            </ReactMarkdown>
+                                        </div>
+
+                                        {showCopyNotification && (
+                                            <div className="copy-notification">
+                                                Markdown copied to clipboard
+                                            </div>
+                                        )}
+                                        {showPublishNotification && (
+                                            <div className="copy-notification">
+                                                Changelog published
+                                                successfully!
+                                            </div>
+                                        )}
+
+                                        <h3>Changed Files</h3>
+                                        <div className="file-list">
+                                            {result.files.map((file) => (
+                                                <button
+                                                    key={file.path}
+                                                    className={`file-button ${
+                                                        selectedFile?.path ===
+                                                        file.path
+                                                            ? "active"
+                                                            : ""
+                                                    }`}
+                                                    onClick={() =>
+                                                        setSelectedFile(file)
+                                                    }
+                                                >
+                                                    {file.path}
+                                                </button>
+                                            ))}
+                                        </div>
+
+                                        {selectedFile && (
+                                            <DiffViewer file={selectedFile} />
+                                        )}
+                                    </div>
+                                )}
+                            </main>
+                        }
+                    />
+                    <Route
+                        path="/changelog/:owner/:repo"
+                        element={<PublicChangelog />}
+                    />
+                </Routes>
+            </div>
+        </Router>
     );
 }
 

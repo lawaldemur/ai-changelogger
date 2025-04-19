@@ -22,6 +22,7 @@
     padding: 3rem 2rem;
     color: white;
     border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+    margin-bottom: 2rem;
 }
 
 .App-header h1 {
@@ -43,7 +44,7 @@
 
 .App-main {
     max-width: 800px;
-    margin: 2rem auto;
+    margin: 0 auto;
     padding: 0 1rem;
     margin-bottom: 0;
     padding-bottom: 5rem;
@@ -142,24 +143,34 @@ button:disabled {
     background: #ffffff;
     padding: 2rem;
     border-radius: 12px;
-    border: 1px solid rgba(55, 53, 47, 0.09);
-    overflow-x: auto;
+    box-shadow: rgba(15, 15, 15, 0.05) 0px 0px 0px 1px;
+    margin-top: 1rem;
+}
+
+.changelog h2 {
+    color: #37352f;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+}
+
+.changelog p {
+    margin-bottom: 1rem;
     line-height: 1.7;
-    font-size: 1rem;
+}
+
+.changelog ul {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+}
+
+.changelog li {
+    margin-bottom: 0.5rem;
 }
 
 .changelog h1 {
     font-size: 1.8rem;
     font-weight: 700;
     margin: 2rem 0 1rem;
-    color: #37352f;
-    letter-spacing: -0.01em;
-}
-
-.changelog h2 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin: 1.8rem 0 0.5rem;
     color: #37352f;
     letter-spacing: -0.01em;
 }
@@ -180,61 +191,90 @@ button:disabled {
     color: #37352f;
 }
 
-.changelog p {
-    margin: 1.2rem 0;
-    color: #37352f;
-    line-height: 1.7;
+.changelog-history {
+    margin-top: 3rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.changelog ul,
-.changelog ol {
-    margin: 1rem 0;
-    padding-left: 2rem;
-}
-
-.changelog li {
-    margin: 0.6rem 0;
-    color: #37352f;
-    line-height: 1.7;
-}
-
-.changelog code {
-    background: #f7f6f3;
-    padding: 0.2rem 0.4rem;
-    border-radius: 3px;
-    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier,
-        monospace;
-    font-size: 0.9em;
-    color: #37352f;
-}
-
-.changelog pre {
-    background: #f7f6f3;
-    padding: 1.2rem;
-    border-radius: 6px;
-    overflow-x: auto;
-    margin: 1.2rem 0;
-}
-
-.changelog blockquote {
-    border-left: 3px solid #e9e9e9;
-    margin: 1.2rem 0;
-    padding: 0.8rem 1rem;
-    color: #787774;
-    background: #f7f6f3;
-    border-radius: 0 6px 6px 0;
-}
-
-.changelog a {
-    color: #2ea043;
-    text-decoration: none;
-    border-bottom: 1px solid rgba(46, 160, 67, 0.2);
+.changelog-entry {
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: rgba(15, 15, 15, 0.05) 0px 0px 0px 1px;
+    margin-bottom: 2rem;
     transition: all 0.2s ease;
 }
 
-.changelog a:hover {
-    color: #2ea043;
-    border-bottom-color: #2ea043;
+.changelog-entry:hover {
+    box-shadow: rgba(15, 15, 15, 0.1) 0px 2px 4px;
+}
+
+.entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.entry-header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #37352f;
+}
+
+.entry-date {
+    color: #787774;
+    font-size: 0.9rem;
+}
+
+.entry-content {
+    line-height: 1.7;
+    color: #37352f;
+}
+
+.entry-actions {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.publish-button {
+    background: #282c34;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.publish-button:hover {
+    background: #1a1d23;
+}
+
+.publish-button::before {
+    content: "📢";
+    font-size: 1rem;
+}
+
+.publish-button.published {
+    background: #2ea043;
+    color: white;
+}
+
+.publish-button.published:hover {
+    background: #2d9240;
+}
+
+.changelog-actions {
+    display: flex;
+    gap: 0.5rem;
 }
 
 .file-list {
@@ -399,4 +439,49 @@ button:disabled {
     font-style: italic;
     background-color: rgba(55, 53, 47, 0.05);
     border-left: none;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .App-header {
+        padding: 2rem 1rem;
+    }
+
+    .App-header h1 {
+        font-size: 2rem;
+    }
+
+    .main-nav {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .nav-link {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+.main-nav {
+    margin-top: 1.5rem;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.nav-link {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.nav-link:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.nav-link.active {
+    background: rgba(255, 255, 255, 0.2);
 }
