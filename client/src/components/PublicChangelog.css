@@ -8,7 +8,7 @@
     box-sizing: border-box;
 }
 
-.changelog-header {
+.public-changelog .changelog-header {
     margin-bottom: 3.5rem;
     text-align: left;
     display: flex;
@@ -142,7 +142,7 @@
 .no-results {
     padding: 2rem;
     color: #787774;
-    text-align: left;
+    text-align: center;
 }
 
 .error {

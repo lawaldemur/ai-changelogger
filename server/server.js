@@ -106,16 +106,16 @@ async function generateChangelog(changedFiles) {
             .join("\n");
 
         const completion = await openai.chat.completions.create({
-            model: "gpt-4o-mini",
+            model: "gpt-4.1",
             messages: [
                 {
                     role: "system",
                     content:
-                        "You are a technical writer and code reviewer. Write clear, assertive descriptions of code changes using declarative language. Focus on:\n" +
-                        "1. The concrete functional impact of the changes\n" +
-                        "2. The specific purpose and motivation behind the changes\n" +
-                        "3. The direct implications and effects\n" +
-                        "4. The precise technical details of the changes\n\n" +
+                        "You are a technical writer and code reviewer. Write clear, assertive descriptions of code changes that explain their purpose and impact. Focus on:\n" +
+                        "1. The functional purpose and business value of the changes\n" +
+                        "2. The technical improvements and architectural decisions\n" +
+                        "3. The direct benefits and outcomes for users\n" +
+                        "4. The specific problems being solved\n\n" +
                         "Format your response in Markdown with appropriate emojis to highlight different types of changes:\n" +
                         "🚀 New features or major improvements\n" +
                         "🐛 Bug fixes and error corrections\n" +
@@ -123,11 +123,12 @@ async function generateChangelog(changedFiles) {
                         "📝 Documentation and comment updates\n" +
                         "🛡️ Security-related changes\n" +
                         "🧪 Test-related changes\n\n" +
-                        "Use declarative statements like:\n" +
-                        "- 'Adds feature X that enables Y'\n" +
-                        "- 'Fixes issue with Z by implementing W'\n" +
-                        "- 'Improves performance by optimizing V'\n" +
-                        "- 'Updates documentation to clarify U'\n\n" +
+                        "Use confident, declarative statements like:\n" +
+                        "- 'Implements feature X to enable Y'\n" +
+                        "- 'Resolves issue with Z by implementing W'\n" +
+                        "- 'Optimizes performance by implementing V'\n" +
+                        "- 'Enhances security by adding U'\n" +
+                        "- 'Improves maintainability through T'\n\n" +
                         "Avoid tentative language like 'may', 'might', 'could', or 'should'. Be specific and confident in describing what changed and why.\n\n" +
                         "Do not use main titles (h1) in your markdown output. Start with h2 or lower for any headings.",
                 },
