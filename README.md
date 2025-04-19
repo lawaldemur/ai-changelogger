@@ -38,6 +38,12 @@ An AI-powered tool for generating and managing changelogs for GitHub repositorie
 -   **Modular Design**: Components and routes are organized for easy maintenance
 -   **Environment Variables**: For secure configuration management
 
+### Development Tools
+
+-   **Cursor IDE**: AI-powered development environment used for building and testing the application
+-   **Git**: For version control and collaboration
+-   **npm**: For package management and script execution
+
 ## Getting Started
 
 ### Prerequisites
