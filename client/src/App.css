@@ -145,6 +145,7 @@ button:disabled {
     border-radius: 12px;
     box-shadow: rgba(15, 15, 15, 0.05) 0px 0px 0px 1px;
     margin-top: 1rem;
+    margin-bottom: 3rem;
 }
 
 .changelog h2 {
@@ -159,12 +160,13 @@ button:disabled {
 }
 
 .changelog ul {
-    margin-bottom: 1rem;
-    padding-left: 1.5rem;
+    margin-bottom: 2rem;
+    padding-left: 2.5rem;
 }
 
 .changelog li {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
+    padding-left: 0.5rem;
 }
 
 .changelog h1 {

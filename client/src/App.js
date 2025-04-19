@@ -267,8 +267,7 @@ function App() {
                                         )}
                                         {showPublishNotification && (
                                             <div className="copy-notification">
-                                                Changelog published
-                                                successfully!
+                                                Changelog published successfully
                                             </div>
                                         )}
 
