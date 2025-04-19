@@ -163,7 +163,7 @@ function App() {
 
                         {showCopyNotification && (
                             <div className="copy-notification">
-                                Markdown copied to clipboard!
+                                Markdown copied to clipboard
                             </div>
                         )}
 
