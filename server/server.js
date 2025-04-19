@@ -90,7 +90,8 @@ async function generateChangelog(changedFiles) {
                         "- 'Fixes issue with Z by implementing W'\n" +
                         "- 'Improves performance by optimizing V'\n" +
                         "- 'Updates documentation to clarify U'\n\n" +
-                        "Avoid tentative language like 'may', 'might', 'could', or 'should'. Be specific and confident in describing what changed and why.",
+                        "Avoid tentative language like 'may', 'might', 'could', or 'should'. Be specific and confident in describing what changed and why.\n\n" +
+                        "Do not use main titles (h1) in your markdown output. Start with h2 or lower for any headings.",
                 },
                 {
                     role: "user",
