@@ -68,16 +68,33 @@ async function generateChangelog(changedFiles) {
             .join("\n");
 
         const completion = await openai.chat.completions.create({
-            model: "gpt-3.5-turbo",
+            model: "gpt-4o-mini",
             messages: [
                 {
                     role: "system",
                     content:
-                        "You are a technical writer. Analyze the code changes and provide a clear, concise description of what changed. Focus on the functional impact of the changes. Keep the response brief and to the point.",
+                        "You are a technical writer and code reviewer. Write clear, assertive descriptions of code changes using declarative language. Focus on:\n" +
+                        "1. The concrete functional impact of the changes\n" +
+                        "2. The specific purpose and motivation behind the changes\n" +
+                        "3. The direct implications and effects\n" +
+                        "4. The precise technical details of the changes\n\n" +
+                        "Format your response in Markdown with appropriate emojis to highlight different types of changes:\n" +
+                        "🚀 New features or major improvements\n" +
+                        "🐛 Bug fixes and error corrections\n" +
+                        "🔧 Code refactoring and optimizations\n" +
+                        "📝 Documentation and comment updates\n" +
+                        "🛡️ Security-related changes\n" +
+                        "🧪 Test-related changes\n\n" +
+                        "Use declarative statements like:\n" +
+                        "- 'Adds feature X that enables Y'\n" +
+                        "- 'Fixes issue with Z by implementing W'\n" +
+                        "- 'Improves performance by optimizing V'\n" +
+                        "- 'Updates documentation to clarify U'\n\n" +
+                        "Avoid tentative language like 'may', 'might', 'could', or 'should'. Be specific and confident in describing what changed and why.",
                 },
                 {
                     role: "user",
-                    content: `Please analyze these code changes and describe them in plain English:\n\n${changeSummary}`,
+                    content: `Please analyze these code changes and describe their specific impact and purpose:\n\n${changeSummary}`,
                 },
             ],
         });

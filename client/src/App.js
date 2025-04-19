@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import ReactMarkdown from "react-markdown";
 import "./App.css";
 import DiffViewer from "./components/DiffViewer";
 
@@ -135,9 +136,9 @@ function App() {
 
                 {result && (
                     <div className="result-container">
-                        <h2>Generated Changelog</h2>
+                        <h2>Changelog</h2>
                         <div className="changelog">
-                            <pre>{result.changelog}</pre>
+                            <ReactMarkdown>{result.changelog}</ReactMarkdown>
                         </div>
 
                         <h3>Changed Files</h3>
