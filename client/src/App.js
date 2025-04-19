@@ -14,6 +14,7 @@ function App() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [selectedFile, setSelectedFile] = useState(null);
+    const [showCopyNotification, setShowCopyNotification] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -52,6 +53,16 @@ function App() {
             setError(err.message);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleCopyChangelog = async () => {
+        try {
+            await navigator.clipboard.writeText(result.changelog);
+            setShowCopyNotification(true);
+            setTimeout(() => setShowCopyNotification(false), 2000);
+        } catch (err) {
+            console.error("Failed to copy changelog:", err);
         }
     };
 
@@ -136,10 +147,25 @@ function App() {
 
                 {result && (
                     <div className="result-container">
-                        <h2>Changelog</h2>
+                        <div className="changelog-header">
+                            <h2>Changelog</h2>
+                            <button
+                                onClick={handleCopyChangelog}
+                                className="copy-button"
+                                title="Copy changelog to clipboard"
+                            >
+                                📄 Copy
+                            </button>
+                        </div>
                         <div className="changelog">
                             <ReactMarkdown>{result.changelog}</ReactMarkdown>
                         </div>
+
+                        {showCopyNotification && (
+                            <div className="copy-notification">
+                                Markdown copied to clipboard!
+                            </div>
+                        )}
 
                         <h3>Changed Files</h3>
                         <div className="file-list">
